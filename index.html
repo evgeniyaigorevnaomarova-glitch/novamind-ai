@@ -119,12 +119,11 @@
     input.value = '';
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    const loadingId = 'loading-' + Date.0;
+    const loadingId = Date.now();
     chatBox.innerHTML += `<div class="message ai" id="loading-${loadingId}"><i>${i18n[currentLang].thinking}</i></div>`;
     chatBox.scrollTop = chatBox.scrollHeight;
 
     const lower = text.toLowerCase();
-    // Четкое условие: картинку рисуем только если явно просят «нарисуй», «создай» или «сделай фото/картинку»
     const isImageReq = lower.startsWith('нарисуй') || lower.startsWith('создай') || lower.startsWith('сделай фото') || lower.startsWith('сделай картинку');
 
     setTimeout(() => {
