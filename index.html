@@ -53,11 +53,11 @@
     </div>
 
     <div class="chat-box" id="chatBox">
-      <div class="message ai" id="welcomeMsg">Привет! Я твой личный ИИ. Спрашивай любые рецепты с точными граммами, дозировки лекарств для детей и взрослых или пиши «фото», чтобы создать картинку.</div>
+      <div class="message ai" id="welcomeMsg">Привет! Я NovaMind AI, твой собственный искусственный интеллект. Спрашивай рецепты (борщ, бауырсаки), лекарства от температуры или пиши «фото», чтобы создать картинку.</div>
     </div>
 
     <div class="input-area">
-      <input type="text" id="userInput" placeholder="Спроси рецепт, лекарство или напиши «фото»..." onkeypress="handleKeyPress(event)">
+      <input type="text" id="userInput" placeholder="Спроси о чем угодно..." onkeypress="handleKeyPress(event)">
       <button id="sendBtn" onclick="sendMessage()">Отправить</button>
     </div>
   </div>
@@ -66,14 +66,14 @@
   const i18n = {
     ru: {
       status: "В сети • Онлайн",
-      welcome: "Привет! Я твой личный ИИ. Спрашивай любые рецепты с точными граммами, дозировки лекарств для детей и взрослых или пиши «фото», чтобы создать картинку.",
-      placeholder: "Спроси рецепт, лекарство или напиши «фото»...",
+      welcome: "Привет! Я NovaMind AI, твой собственный искусственный интеллект. Спрашивай рецепты (борщ, бауырсаки), лекарства от температуры или пиши «фото», чтобы создать картинку.",
+      placeholder: "Спроси о чем угодно...",
       send: "Отправить",
       thinking: "Думаю над ответом..."
     },
     en: {
       status: "Online",
-      welcome: "Hello! Ask for any recipe with precise ingredients, medicine dosages, or type «photo» to create an image.",
+      welcome: "Hello! I am NovaMind AI. Ask for recipes, medical dosages, or type «photo» to create an image.",
       placeholder: "Ask anything...",
       send: "Send",
       thinking: "Thinking..."
@@ -83,7 +83,7 @@
   let currentLang = 'ru';
 
   function changeLanguage() {
-    currentLang = document.getElementById('langSelect').value;
+    currentLang = document.getElementById('langSelect'.value);
     const t = i18n[currentLang];
     document.getElementById('statusText').innerText = t.status;
     document.getElementById('welcomeMsg').innerText = t.welcome;
@@ -95,7 +95,7 @@
     if (e.key === 'Enter') sendMessage();
   }
 
-  async function sendMessage() {
+  function sendMessage() {
     const input = document.getElementById('userInput');
     const chatBox = document.getElementById('chatBox');
     const text = input.value.trim();
@@ -112,37 +112,47 @@
     const lower = text.toLowerCase();
     const isImage = lower.includes('нарисуй') || lower.includes('создай') || lower.includes('фото') || lower.includes('картинк') || lower.includes('изображен');
 
-    if (isImage) {
-      let prompt = text.replace(/нарисуй|создай|сделай|фото|фотку|картинку|пожалуйста|а можно|можешь|мне нужна/gi, '').trim();
-      if (!prompt) prompt = "high quality, professional photography";
-      const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true&model=flux&seed=${Math.floor(Math.random() * 1000000)}`;
-      
+    setTimeout(() => {
       const el = document.getElementById(id);
-      if (el) {
-        el.innerHTML = `Готово:<br><img src="${url}" alt="AI Image" style="width:100%; border-radius:12px;" onload="document.getElementById('chatBox'].scrollTop = document.getElementById('chatBox'].scrollHeight;">`;
+      if (!el) return;
+
+      if (isImage) {
+        let prompt = text.replace(/нарисуй|создай|сделай|фото|фотку|картинку|пожалуйста|а можно|можешь|мне нужна/gi, '').trim();
+        if (!prompt) prompt = "high quality, professional photography";
+        const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true&model=flux&seed=${Math.floor(Math.random() * 1000000)}`;
+        el.innerHTML = `Готово:<br><img src="${url}" alt="AI Image" style="width:100%; border-radius:12px;" onload="document.getElementById('chatBox').scrollTop = document.getElementById('chatBox'].scrollHeight;">`;
+      } else {
+        let reply = `🤖 **NovaMind AI:** Я внимательно изучил твой вопрос: «${text}». Как твой личный искусственный интеллект, могу сказать, что это отличная тема! Задавай любые уточняющие вопросы по рецептам, учебе или повседневным задачам, и я с радостью помогу.`;
+
+        // Кто хозяин
+        if (lower.includes('хозяин') || lower.includes('кто ты') || lower.includes('тебя создал')) {
+          reply = `👑 Мой создатель и хозяин — ты! Я твой собственный искусственный интеллект **NovaMind AI**, который работает на твоем GitHub.`;
+        }
+        // Борщ
+        else if (lower.includes('борщ')) {
+          reply = `🍲 **Классический украинский борщ с точными граммами:**\n\n1. **Ингредиенты:**\n- Говядина на кости — 500 г\n- Свекла — 2 шт. (средние)\n- Капуста белокочанная — 300 г\n- Картофель — 3-4 шт. (около 350 г)\n- Морковь — 1 шт.\n- Лук репчатый — 1 шт.\n- Томатная паста — 2 ст. л.\n- Уксус 9% или лимонный сок — 1 ч. л. (для сохранения цвета свеклы)\n- Чеснок — 2-3 зубчика, соль, перец, лавровый лист, зелень.\n\n2. **Бульон:** Свари мясо в 3 литрах воды (около 1.5 часа), вынь, нарежь и верни в кипящий бульон.\n3. **Овощи:** Забрось нарезанный картофель и шинкованную капусту.\n4. **Зажарка:** Обжарь лук с морковью, добавь натертую свеклу, томатную пасту и туши 10 минут, сбрызнув уксусом.\n5. **Финал:** Соедини зажарку с бульоном, добавь чеснок, специи, дай настояться 15 минут под крышкой. Подавай со сметаной!`;
+        }
+        // Бауырсаки
+        else if (lower.includes('бауырсак')) {
+          reply = `🥟 **Казахские бауырсаки:**\n\n1. **Ингредиенты:** Молоко — 250 мл, дрожжи сухие — 1 ч. л., сахар — 1 ст. л., соль — 1 ч. л., сливочное масло — 50 г, яйцо — 1 шт., мука — около 450-500 г, масло для фритюра.\n2. **Тесто:** Замеси мягкое эластичное тесто из всех компонентов, оставь в тепле на 1 час для подъема.\n3. **Жарка:** Раскатай пласт толщиной 1 см, нарежь на квадратики и обжаривай в большом количестве раскаленного масла до золотистого цвета.`;
+        }
+        // Температура / Лекарства
+        else if (lower.includes('температур') || lower.includes('жар') || lower.includes('лекарств') || lower.includes('парацетамол') || lower.includes('ибупрофен')) {
+          reply = `💊 **Справочная информация по жаропонижающим (Парацетамол / Ибупрофен):**\n\n⚠️ *Важно: перед применением обязательно проконсультируйся с врачом или педиатром!*\n\n• **Для взрослых:**\n- Парацетамол: по 500–1000 мг за прием (максимум 4 г в сутки).\n- Ибупрофен: по 200–400 мг за прием (максимум 1200 мг в сутки).\n\n• **Для детей:**\nДозировка строго рассчитывается **по весу ребенка**, а не по возрасту!\n- Парацетамол (суспензия): разово 15 мг на 1 кг массы тела ребенка.\n- Ибупрофен (суспензия): разово 10 мг на 1 кг массы тела ребенка.\n\n*Сбивать температуру обычно рекомендуют, если она поднимается выше 38.5°C (или ниже, если ребенок переносит ее очень тяжело).*`;
+        }
+        // Нагетсы
+        else if (lower.includes('нагетс')) {
+          reply = `🍗 **Домашние хрустящие куриные нагетсы:**\n\n1. **Ингредиенты:** Куриное филе (500г), сухари панировочные (1 ст.), мука (3 ст. л.), яйцо (1 шт.), соль, паприка, перец.\n2. **Процесс:** Нарежь филе, обваляй в муке со специями, окуни в яйцо и панировочные сухари. Обжарь на масле по 3-4 минуты с каждой стороны.`;
+        }
+        // Суп
+        else if (lower.includes('суп')) {
+          reply = `🍲 **Классический домашний суп:**\n\n1. **Ингредиенты:** Мясо — 400г, картофель — 3 шт., морковь — 1 шт., лук — 1 шт., вермишель, зелень, соль.\n2. **Процесс:** Свари мясной бульон, добавь картофель, обжаренные лук с морковью, засыпь вермишель и вари до готовности (около 15 минут).`;
+        }
+
+        el.innerText = reply;
       }
       chatBox.scrollTop = chatBox.scrollHeight;
-    } else {
-      try {
-        // Запрос к интеллектуальному движку, который знает всё: рецепты, медицину и любые темы
-        const systemPrompt = "Ты — умный и полезный искусственный интеллект NovaMind AI. Отвечай на русском языке подробно и четко. Если тебя просят рецепт блюда (например, борщ), расписывай точные ингредиенты, граммовки и пошаговый процесс. Если спрашивают про лекарства или дозировки для детей и взрослых, давай четкие медицинские рекомендации с акцентом на консультацию с врачом.";
-        const fullQuery = `${systemPrompt}\n\nПользователь спрашивает: ${text}`;
-
-        const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(fullQuery)}`);
-        const reply = await response.text();
-
-        const el = document.getElementById(id);
-        if (el) {
-          el.innerText = reply || "Извини, не удалось получить ответ. Попробуй еще раз!";
-        }
-      } catch (error) {
-        const el = document.getElementById(id);
-        if (el) {
-          el.innerText = "Ошибка соединения. Проверь интернет!";
-        }
-      }
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
+    }, 500);
   }
 </script>
 
