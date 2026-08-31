@@ -110,7 +110,7 @@
     chatBox.scrollTop = chatBox.scrollHeight;
 
     const lower = text.toLowerCase();
-    const isImage = lower.startsWith('нарисуй') || lower.startsWith('создай') || lower.startsWith('сделай фото') || lower.startsWith('сделай картинку');
+   const isImage = lower.startsWith('нарисуй') || lower.startsWith('создай') || lower.startsWith('сделай') || lower.includes('фото') || lower.includes('картинк') || lower.includes('изображен');
 
     setTimeout(() => {
       const el = document.getElementById(id);
