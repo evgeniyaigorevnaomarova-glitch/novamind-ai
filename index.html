@@ -53,7 +53,7 @@
     </div>
 
     <div class="chat-box" id="chatBox">
-      <div class="message ai" id="welcomeMsg">Привет! Спрашивай рецепты (нагетсы, креветки, шарлотка) или пиши «нарисуй», чтобы создать картинку.</div>
+      <div class="message ai" id="welcomeMsg">Привет! Спрашивай рецепты (нагетсы, креветки, шарлотка) или пиши «нарисуй» / «фото», чтобы создать картинку.</div>
     </div>
 
     <div class="input-area">
@@ -66,14 +66,14 @@
   const i18n = {
     ru: {
       status: "В сети • Онлайн",
-      welcome: "Привет! Спрашивай рецепты (нагетсы, креветки, шарлотка) или пиши «нарисуй», чтобы создать картинку.",
+      welcome: "Привет! Спрашивай рецепты (нагетсы, креветки, шарлотка) или пиши «нарисуй» / «фото», чтобы создать картинку.",
       placeholder: "Напиши сообщение или вопрос...",
       send: "Отправить",
       thinking: "Думаю над ответом..."
     },
     en: {
       status: "Online",
-      welcome: "Hello! Ask for recipes or type «draw» to create an image.",
+      welcome: "Hello! Ask for recipes or type «draw» / «photo» to create an image.",
       placeholder: "Type a message or question...",
       send: "Send",
       thinking: "Thinking..."
@@ -110,19 +110,19 @@
     chatBox.scrollTop = chatBox.scrollHeight;
 
     const lower = text.toLowerCase();
-   const isImage = lower.startsWith('нарисуй') || lower.startsWith('создай') || lower.startsWith('сделай') || lower.includes('фото') || lower.includes('картинк') || lower.includes('изображен');
+    const isImage = lower.includes('нарисуй') || lower.includes('создай') || lower.includes('фото') || lower.includes('картинк') || lower.includes('изображен');
 
     setTimeout(() => {
       const el = document.getElementById(id);
       if (!el) return;
 
       if (isImage) {
-        let prompt = text.replace(/нарисуй|создай|сделай фото|сделай картинку|пожалуйста/gi, '').trim();
-        if (!prompt || lower.includes('семью')) {
-          prompt = "happy family of five people, mother, father, and three boys aged 13, 11, and 2, realistic photo, high quality";
+        let prompt = text.replace(/нарисуй|создай|сделай|фото|фотку|картинку|пожалуйста|а можно|можешь|мне нужна/gi, '').trim();
+        if (!prompt) {
+          prompt = "cute frog, high quality, realistic photo";
         }
         const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true&model=flux&seed=${Math.floor(Math.random() * 1000000)}`;
-        el.innerHTML = `Готово:<br><img src="${url}" alt="AI" style="width:100%; border-radius:12px;" onload="document.getElementById('chatBox').scrollTop = document.getElementById('chatBox'].scrollHeight;">`;
+        el.innerHTML = `Готово:<br><img src="${url}" alt="AI Image" style="width:100%; border-radius:12px;" onload="document.getElementById('chatBox').scrollTop = document.getElementById('chatBox'].scrollHeight;">`;
       } else {
         let reply = `Интересный вопрос! По запросу «${text}» могу сказать, что это отличная тема. Если нужны подробности или рецепт, просто уточни в чате!`;
 
