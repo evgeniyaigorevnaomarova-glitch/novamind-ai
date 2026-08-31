@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NovaMind AI</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230b132b'/><path d='M50 15 L58 42 L85 50 L58 58 L50 85 L42 58 L15 50 L42 42 Z' fill='none' stroke='%2300f2fe' stroke-width='5'/><circle cx='50' cy='50' r='8' fill='%234facfe'/></svg>" type="image/svg+xml">
   <style>
     :root {
       --bg-color: #f0f2f5;
@@ -15,27 +14,20 @@
       --text: #050505;
       --border: #e0e0e0;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: var(--bg-color); color: var(--text); display: flex; justify-content: center; height: 100vh; overflow: hidden; }
-
     .chat-container { width: 100%; max-width: 800px; display: flex; flex-direction: column; height: 100vh; background: var(--panel-bg); border-left: 1px solid var(--border); border-right: 1px solid var(--border); box-shadow: 0 0 15px rgba(0,0,0,0.05); }
-
     .header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: #ffffff; }
     .header-left { display: flex; align-items: center; gap: 12px; }
-    .logo-box { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #0b112c; }
-    .logo-box svg { width: 100%; height: 100%; }
+    .logo-box { width: 36px; height: 36px; border-radius: 50%; background: #0b112c; display: flex; align-items: center; justify-content: center; color: #00f2fe; font-weight: bold; }
     .title { font-size: 1.1rem; font-weight: 600; color: #050505; }
     .status { font-size: 0.8rem; color: #2ecc71; }
-
     .lang-select { padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border); background: #f0f2f5; font-size: 0.85rem; outline: none; cursor: pointer; }
-
     .chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #ffffff; }
     .message { max-width: 80%; padding: 12px 16px; border-radius: 18px; line-height: 1.4; font-size: 0.95rem; word-wrap: break-word; white-space: pre-wrap; }
     .message img { max-width: 100%; border-radius: 12px; margin-top: 8px; display: block; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     .user { align-self: flex-end; background-color: var(--user-msg); color: #fff; border-bottom-right-radius: 4px; }
     .ai { align-self: flex-start; background-color: var(--ai-msg); color: #050505; border-bottom-left-radius: 4px; }
-
     .input-area { padding: 16px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: #ffffff; }
     input { flex: 1; padding: 12px 16px; border-radius: 20px; border: 1px solid var(--border); background: #f0f2f5; color: #000; font-size: 1rem; outline: none; }
     input:focus { border-color: var(--accent); background: #fff; }
@@ -48,13 +40,7 @@
   <div class="chat-container">
     <div class="header">
       <div class="header-left">
-        <div class="logo-box">
-          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="100" height="100" fill="#0b132b"/>
-            <path d="M50 15 L58 42 L85 50 L58 58 L50 85 L42 58 L15 50 L42 42 Z" fill="none" stroke="#00f2fe" stroke-width="4"/>
-            <circle cx="50" cy="50" r="8" fill="#4facfe"/>
-          </svg>
-        </div>
+        <div class="logo-box">AI</div>
         <div>
           <div class="title">NovaMind AI</div>
           <div class="status" id="statusText">В сети • Онлайн</div>
@@ -83,16 +69,14 @@
       welcome: "Привет! Спрашивай рецепты (нагетсы, креветки, шарлотка) или пиши «нарисуй», чтобы создать картинку.",
       placeholder: "Напиши сообщение или вопрос...",
       send: "Отправить",
-      thinking: "Думаю над ответом...",
-      generating: "🎨 Создаю изображение..."
+      thinking: "Думаю над ответом..."
     },
     en: {
       status: "Online",
       welcome: "Hello! Ask for recipes or type «draw» to create an image.",
       placeholder: "Type a message or question...",
       send: "Send",
-      thinking: "Thinking...",
-      generating: "🎨 Generating image..."
+      thinking: "Thinking..."
     }
   };
 
@@ -100,65 +84,59 @@
 
   function changeLanguage() {
     currentLang = document.getElementById('langSelect').value;
-    const texts = i18n[currentLang];
-    
-    document.getElementById('statusText').innerText = texts.status;
-    document.getElementById('welcomeMsg').innerText = texts.welcome;
-    document.getElementById('userInput').placeholder = texts.placeholder;
-    document.getElementById('sendBtn').innerText = texts.send;
+    const t = i18n[currentLang];
+    document.getElementById('statusText').innerText = t.status;
+    document.getElementById('welcomeMsg').innerText = t.welcome;
+    document.getElementById('userInput').placeholder = t.placeholder;
+    document.getElementById('sendBtn').innerText = t.send;
+  }
+
+  function handleKeyPress(e) {
+    if (e.key === 'Enter') sendMessage();
   }
 
   function sendMessage() {
     const input = document.getElementById('userInput');
     const chatBox = document.getElementById('chatBox');
     const text = input.value.trim();
-
     if (!text) return;
 
     chatBox.innerHTML += `<div class="message user">${text}</div>`;
     input.value = '';
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    const loadingId = Date.now();
-    chatBox.innerHTML += `<div class="message ai" id="loading-${loadingId}"><i>${i18n[currentLang].thinking}</i></div>`;
+    const id = 'msg-' + Date.now();
+    chatBox.innerHTML += `<div class="message ai" id="${id}"><i>${i18n[currentLang].thinking}</i></div>`;
     chatBox.scrollTop = chatBox.scrollHeight;
 
     const lower = text.toLowerCase();
-    const isImageReq = lower.startsWith('нарисуй') || lower.startsWith('создай') || lower.startsWith('сделай фото') || lower.startsWith('сделай картинку');
+    const isImage = lower.startsWith('нарисуй') || lower.startsWith('создай') || lower.startsWith('сделай фото') || lower.startsWith('сделай картинку');
 
     setTimeout(() => {
-      const loadElem = document.getElementById(`loading-${loadingId}`);
-      if (!loadElem) return;
+      const el = document.getElementById(id);
+      if (!el) return;
 
-      if (isImageReq) {
-        let imagePrompt = text.replace(/нарисуй|создай|сделай фото|сделай картинку|пожалуйста/gi, '').trim();
-        if (!imagePrompt || lower.includes('семью')) {
-          imagePrompt = "happy family of five people, mother, father, and three boys aged 13, 11, and 2, realistic photo, high quality";
+      if (isImage) {
+        let prompt = text.replace(/нарисуй|создай|сделай фото|сделай картинку|пожалуйста/gi, '').trim();
+        if (!prompt || lower.includes('семью')) {
+          prompt = "happy family of five people, mother, father, and three boys aged 13, 11, and 2, realistic photo, high quality";
         }
-        
-        const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}?width=1024&height=1024&nologo=true&model=flux&seed=${Math.floor(Math.random() * 1000000)}`;
-        loadElem.innerHTML = `Готово:<br><img src="${imageUrl}" alt="AI Image" style="width:100%; border-radius:12px;" onload="document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;">`;
+        const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true&model=flux&seed=${Math.floor(Math.random() * 1000000)}`;
+        el.innerHTML = `Готово:<br><img src="${url}" alt="AI" style="width:100%; border-radius:12px;" onload="document.getElementById('chatBox').scrollTop = document.getElementById('chatBox'].scrollHeight;">`;
       } else {
-        let reply = `Интересный вопрос! По запросу «${text}» могу сказать, что это отличная тема. Главное — подходить к ней творчески. Если нужны подробные шаги или рецепт, просто уточни в чате!`;
+        let reply = `Интересный вопрос! По запросу «${text}» могу сказать, что это отличная тема. Если нужны подробности или рецепт, просто уточни в чате!`;
 
         if (lower.includes('нагетс')) {
-          reply = `🍗 **Домашние хрустящие куриные нагетсы:**\n\n1. **Ингредиенты:** Куриное филе (500г), панировочные сухари (1 стакан), мука (3 ст. л.), яйцо (1 шт.), соль, паприка, черный перец и сушеный чеснок по вкусу, растительное масло для жарки.\n2. **Подготовка:** Нарежь куриное филе небольшими порционными кусочками (примерно на один укус).\n3. **Панировка:** Подготовь три миски: в первую насыпь муку со специями, во второй взбей яйцо, в третьей — панировочные сухари.\n4. **Процесс:** Обваляй каждый кусочек в муке, окуни в яйцо, а затем тщательно обваляй в сухарях.\n5. **Жарка:** Обжаривай на разогретой сковороде с растительным маслом по 3-4 минуты с каждой стороны до золотистой корочки.\n\nПодавай с любимым соусом!`;
+          reply = `🍗 **Домашние хрустящие куриные нагетсы:**\n\n1. **Ингредиенты:** Куриное филе (500г), сухари панировочные (1 ст.), мука (3 ст. л.), яйцо (1 шт.), соль, паприка, перец, сушеный чеснок.\n2. **Подготовка:** Нарежь филе порционными кусочками.\n3. **Панировка:** Обваляй в муке со специями, окуни в взбитое яйцо, затем тщательно обваляй в сухарях.\n4. **Жарка:** Обжаривай на масле по 3-4 минуты с каждой стороны до золотистой корочки.`;
         } else if (lower.includes('креветк')) {
-          reply = `🦐 **Изысканный рецепт креветок в чесночно-сливочном соусе:**\n\n1. **Ингредиенты:** Креветки крупные (500г), сливочное масло (30г), чеснок (3 зубчика), сливки 20% (150 мл), свежая зелень, соль и перец по вкусу.\n2. **Обжарка:** Растопи сливочное масло на сковороде, добавь измельченный чеснок и обжаривай 30 секунд.\n3. **Тушение:** Выложи креветки, обжаривай по 1 минуте с каждой стороны, влей сливки, посоли, поперчи и туши на среднем огне еще 2 минуты.\n\nПодавай с зеленью и долькой лимона. Приятного аппетита!`;
+          reply = `🦐 **Креветки в чесночно-сливочном соусе:**\n\n1. **Ингредиенты:** Креветки (500г), сливочное масло (30г), чеснок (3 зуб.), сливки 20% (150 мл), зелень.\n2. **Процесс:** Обжарь чеснок на масле 30 секунд, добавь креветки (по 1 мин. с каждой стороны), влей сливки и туши еще 2 минуты.`;
         } else if (lower.includes('шарлотк')) {
-          reply = `🍎 **Классический рецепт пышной шарлотки:**\n\n1. **Ингредиенты:** Яблоки (3-4 шт.), яйца (3 шт.), сахар (1 стакан), мука (1 стакан), ванилин.\n2. **Тесто:** Взбей яйца с сахаром до пышной пены, аккуратно вмешай муку.\n3. **Выпечка:** Нарежь яблоки в форму, залей тестом и выпекай при 180°C около 30–35 минут.`;
+          reply = `🍎 **Классическая шарлотка:**\n\n1. **Ингредиенты:** Яблоки (3-4 шт.), яйца (3 шт.), сахар (1 ст.), мука (1 ст.).\n2. **Приготовление:** Взбей яйца с сахаром, добавь муку. Нарежь яблоки в форму, залей тестом и выпекай 30-35 минут при 180°C.`;
         }
-
-        loadElem.innerText = reply;
+        el.innerText = reply;
       }
       chatBox.scrollTop = chatBox.scrollHeight;
-    }, 800);
-  }
-
-  function handleKeyPress(event) {
-    if (event.key === 'Enter') {
-      sendMessage();
-    }
+    }, 600);
   }
 </script>
 
