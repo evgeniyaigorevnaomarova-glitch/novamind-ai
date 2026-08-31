@@ -97,7 +97,7 @@
   let currentLang = 'ru';
 
   function changeLanguage() {
-    currentLang = document.getElementById('langSelect'].value;
+    currentLang = document.getElementById('langSelect').value;
     const texts = i18n[currentLang];
     
     document.getElementById('statusText').innerText = texts.status;
@@ -106,7 +106,7 @@
     document.getElementById('sendBtn').innerText = texts.send;
   }
 
-  async function sendMessage() {
+  function sendMessage() {
     const input = document.getElementById('userInput');
     const chatBox = document.getElementById('chatBox');
     const text = input.value.trim();
@@ -133,10 +133,9 @@
         const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(finalPrompt)}?width=1024&height=1024&nologo=true&model=flux&seed=${Math.floor(Math.random() * 1000000)}`;
         document.getElementById(loadingId).innerHTML = `Готово:<br><img src="${imageUrl}" alt="AI Image" style="width:100%; border-radius:12px;" onload="document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;">`;
       } else {
-        // Умный текстовый ответ для любых вопросов и рецептов
         let reply = `Отличный запрос! Вот ответ на твой вопрос («${text}»):\n\n1. Подготовь все необходимые ингредиенты и инструменты.\n2. Тщательно смешай их в правильных пропорциях.\n3. Готовь до появления идеального результата.\n\nЕсли нужно что-то конкретное — просто напиши детали!`;
         if (lower.includes('рецепт') || lower.includes('куриц')) {
-          reply = `🍗 **Классический рецепт сочной курочки:**\n\n1. Вори кулерное филе или бедра, промои и обсуши бумажным полотенцем.\n2. Натри специями (соль, черный перец, паприка, сушеный чеснок) и добавь немного оливкового масла.\n3. Запекай в духовке при 190°C примерно 35-40 минут до золотистой корочки.\n\nПриятного аппетита!`;
+          reply = `🍗 **Классический рецепт сочной курочки:**\n\n1. Возьми куриное филе или бедра, промои и обсуши бумажным полотенцем.\n2. Натри специями (соль, черный перец, паприка, сушеный чеснок) и добавь немного оливкового масла.\n3. Запекай в духовке при 190°C примерно 35-40 минут до золотистой корочки.\n\nПриятного аппетита!`;
         }
         document.getElementById(loadingId).innerText = reply;
       }
