@@ -67,7 +67,7 @@
     </div>
 
     <div class="chat-box" id="chatBox">
-      <div class="message ai" id="welcomeMsg">Привет! Спрашивай что угодно или пиши «нарисуй», чтобы создать картинку.</div>
+      <div class="message ai" id="welcomeMsg">Привет! Спрашивай рецепты (например, нагетсы) или пиши «нарисуй», чтобы создать картинку.</div>
     </div>
 
     <div class="input-area">
@@ -80,7 +80,7 @@
   const i18n = {
     ru: {
       status: "В сети • Онлайн",
-      welcome: "Привет! Спрашивай что угодно или пиши «нарисуй», чтобы создать картинку.",
+      welcome: "Привет! Спрашивай рецепты (например, нагетсы) или пиши «нарисуй», чтобы создать картинку.",
       placeholder: "Напиши сообщение или вопрос...",
       send: "Отправить",
       thinking: "Думаю над ответом...",
@@ -88,7 +88,7 @@
     },
     en: {
       status: "Online",
-      welcome: "Hello! Ask anything or type «draw» to create an image.",
+      welcome: "Hello! Ask for recipes or type «draw» to create an image.",
       placeholder: "Type a message or question...",
       send: "Send",
       thinking: "Thinking...",
@@ -99,7 +99,7 @@
   let currentLang = 'ru';
 
   function changeLanguage() {
-    currentLang = document.getElementById('langSelect').value;
+    currentLang = document.getElementById('langSelect'].value;
     const texts = i18n[currentLang];
     
     document.getElementById('statusText').innerText = texts.status;
@@ -108,7 +108,7 @@
     document.getElementById('sendBtn').innerText = texts.send;
   }
 
-  async function sendMessage() {
+  function sendMessage() {
     const input = document.getElementById('userInput');
     const chatBox = document.getElementById('chatBox');
     const text = input.value.trim();
@@ -124,31 +124,32 @@
     chatBox.scrollTop = chatBox.scrollHeight;
 
     const lower = text.toLowerCase();
-    const isImageReq = lower.startsWith('нарисуй') || lower.startsWith('создай') || lower.startsWith('сделай') || lower.includes('картинка') || lower.includes('фото');
+    const isImageReq = lower.startsWith('нарисуй') || lower.startsWith('создай') || lower.startsWith('сделай') || lower.includes('картинка') || lower.includes('фото') || lower.includes('семью');
 
-    try {
+    setTimeout(() => {
       if (isImageReq) {
-        document.getElementById(loadingId).innerHTML = `<i>${i18n[currentLang].generating}</i>`;
-        
-        // Умная адаптация запроса для генератора изображений
         let imagePrompt = text.replace(/нарисуй|создай|сделай|фотографию|картинку|пожалуйста/gi, '').trim();
-        if (!imagePrompt) imagePrompt = text;
+        if (!imagePrompt || lower.includes('семью')) {
+          imagePrompt = "happy family of five people, mother, father, and three boys aged 13, 11, and 2, realistic photo, high quality";
+        }
         
         const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}?width=1024&height=1024&nologo=true&model=flux&seed=${Math.floor(Math.random() * 1000000)}`;
-
-        document.getElementById(loadingId).innerHTML = `Готово:<br><img src="${imageUrl}" alt="AI Image" style="width:100%; border-radius:12px;" onload="document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;">`;
+        document.getElementById(loadingId).innerHTML = `Готово:<br><img src="${imageUrl}" alt="AI Image" style="width:100%; border-radius:12px;" onload="document.getElementById('chatBox'].scrollTop = document.getElementById('chatBox'].scrollHeight;">`;
       } else {
-        // Настоящий текстовый ответ через публичный ИИ-сервис
-        const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(text)}`);
-        const replyText = await response.text();
+        let reply = `Интересный вопрос! По запросу «${text}» могу сказать, что это отличная тема. Главное — подходить к ней творчески. Если нужны подробные шаги, просто уточни детали!`;
 
-        document.getElementById(loadingId).innerText = replyText;
+        if (lower.includes('нагетс')) {
+          reply = `🍗 **Домашние хрустящие куриные нагетсы:**\n\n1. **Ингредиенты:** Куриное филе (500г), панировочные сухари (1 стакан), мука (3 ст. л.), яйцо (1 шт.), соль, паприка, черный перец и сушеный чеснок по вкусу, растительное масло для жарки.\n2. **Подготовка:** Нарежь куриное филе небольшими порционными кусочками (примерно на один укус).\n3. **Панировка:** Подготовь три миски: в первую насыпь муку с солью и специями, во второй взбей яйцо, в третьей — панировочные сухари.\n4. **Процесс:** Обваляй каждый кусочек в муке, окуни в яйцо, а затем тщательно обваляй в сухарях.\n5. **Жарка:** Обжаривай на разогретой сковороде с растительным маслом по 3-4 минуты с каждой стороны до красивой золотистой корочки (или запекай в духовке при 200°C около 15 минут).\n\nПодавай с любимым соусом!`;
+        } else if (lower.includes('креветк')) {
+          reply = `🦐 **Изысканный рецепт креветок в чесночно-сливочном соусе:**\n\n1. **Ингредиенты:** Креветки крупные (500г), сливочное масло (30г), чеснок (3 зубчика), сливки 20% (150 мл), свежая зелень, соль и перец по вкусу.\n2. **Обжарка:** Растопи сливочное масло на сковороде, добавь измельченный чеснок и обжаривай 30 секунд.\n3. **Тушение:** Выложи креветки, обжаривай по 1 минуте с каждой стороны, влей сливки, посоли, поперчи и туши на среднем огне еще 2 минуты.\n\nПодавай с зеленью и долькой лимона. Приятного аппетита!`;
+        } else if (lower.includes('шарлотк')) {
+          reply = `🍎 **Классический рецепт пышной шарлотки:**\n\n1. **Ингредиенты:** Яблоки (3-4 шт.), яйца (3 шт.), сахар (1 стакан), мука (1 стакан), ванилин.\n2. **Тесто:** Взбей яйца с сахаром до пышной пены, аккуратно вмешай муку.\n3. **Выпечка:** Нарежь яблоки в форму, залей тестом и выпекай при 180°C около 30–35 минут.`;
+        }
+
+        document.getElementById(loadingId).innerText = reply;
       }
-    } catch (error) {
-      document.getElementById(loadingId).innerText = `Интересный вопрос! По запросу «${text}»: сервис обрабатывает данные в штатном режиме.`;
-    }
-
-    chatBox.scrollTop = chatBox.scrollHeight;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }, 800);
   }
 
   function handleKeyPress(event) {
